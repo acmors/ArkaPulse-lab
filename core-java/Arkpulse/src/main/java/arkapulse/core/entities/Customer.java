@@ -1,15 +1,13 @@
 package arkapulse.core.entities;
 
 import arkapulse.core.entities.enums.RiskProfile;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-public class Customers {
+@Table(name = "customers")
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +20,10 @@ public class Customers {
     private RiskProfile riskProfile;
     private LocalDateTime createdAt;
 
-    public Customers() {
+    public Customer() {
     }
 
-    public Customers(Long id, String name, String email, String password, String code, boolean isVerified, RiskProfile riskProfile, LocalDateTime createdAt) {
+    public Customer(Long id, String name, String email, String password, String code, boolean isVerified, RiskProfile riskProfile, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.email = email;

@@ -1,7 +1,7 @@
 package arkapulse.core.exceptions;
 
-public class ResourceNotFoundExcetion extends RuntimeException {
-  public ResourceNotFoundExcetion(String message) {
-    super(message);
-  }
+public class ResourceNotFoundException extends RuntimeException {
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
 }

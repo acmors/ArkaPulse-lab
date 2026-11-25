@@ -1,4 +1,4 @@
-package arkapulse.core.dto;
+package arkapulse.core.dto.customer;
 
 import arkapulse.core.entities.enums.RiskProfile;
 
