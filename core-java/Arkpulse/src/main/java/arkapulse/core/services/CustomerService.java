@@ -2,7 +2,10 @@ package arkapulse.core.services;
 
 import arkapulse.core.dto.customer.CreateCustomerDTO;
 import arkapulse.core.dto.customer.ResponseCustomer;
+import arkapulse.core.dto.customer.SuitabilityAnswersDTO;
+import arkapulse.core.dto.customer.VerifyCodeDTO;
 import arkapulse.core.entities.Customer;
+import arkapulse.core.entities.enums.RiskProfile;
 import arkapulse.core.exceptions.BusinessException;
 import arkapulse.core.exceptions.ResourceNotFoundException;
 import arkapulse.core.repositories.CustomerRepository;
@@ -44,6 +47,38 @@ public class CustomerService {
         );
     }
 
+    @Transactional
+    public void verifyCustomer(VerifyCodeDTO dto){
+        Customer customer = customerRepository.findCustomerByEmail(dto.email())
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado."));
+
+        if(customer.isVerified()){
+            throw new BusinessException("Cliente já verificado");
+        }
+
+        if(customer.getCode() == null || !customer.getCode().equals(dto.code())){
+            throw new BusinessException("Código invalido");
+        }
+
+        customer.setVerified(true);
+        customer.setCode(null);
+        customerRepository.save(customer);
+    }
+
+    @Transactional
+    public void calculateSuitability(Long id, SuitabilityAnswersDTO suitability){
+        Customer customer = findByIdIntern(id);
+        int total = suitability.ageScore() + suitability.experienceScore() + suitability.lossToToleranceScore();
+
+        if(total <= 4){
+            customer.setRiskProfile(RiskProfile.CONSERVATIVE);
+        }else if(total <= 7){
+            customer.setRiskProfile(RiskProfile.MODERATE);
+        }else{
+            customer.setRiskProfile(RiskProfile.AGGRESSIVE);
+        }
+    }
+
     @Transactional(readOnly = true)
     public ResponseCustomer findById(Long id){
         Customer customer = customerRepository.findById(id)
@@ -58,6 +93,8 @@ public class CustomerService {
                 customer.getCreatedAt()
         );
     }
+
+
 
     @Transactional(readOnly = true)
     public ResponseCustomer findByEmail(String email){

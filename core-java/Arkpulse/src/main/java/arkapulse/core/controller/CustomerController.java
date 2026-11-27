@@ -2,6 +2,8 @@ package arkapulse.core.controller;
 
 import arkapulse.core.dto.customer.CreateCustomerDTO;
 import arkapulse.core.dto.customer.ResponseCustomer;
+import arkapulse.core.dto.customer.SuitabilityAnswersDTO;
+import arkapulse.core.dto.customer.VerifyCodeDTO;
 import arkapulse.core.services.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,5 +32,17 @@ public class CustomerController {
     @GetMapping("/customer/email/{email}")
     public ResponseEntity<ResponseCustomer> getCustomerByEmail(@PathVariable String email){
         return ResponseEntity.ok().body(customerService.findByEmail(email));
+    }
+
+    @PostMapping("/verify-customer")
+    public ResponseEntity<Void> verifyCustomer(@RequestBody VerifyCodeDTO code){
+        customerService.verifyCustomer(code);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/suitability")
+    public ResponseEntity<Void> calculateSuitability(@PathVariable Long id, @RequestBody SuitabilityAnswersDTO dto){
+        customerService.calculateSuitability(id, dto);
+        return ResponseEntity.ok().build();
     }
 }
